@@ -1,5 +1,7 @@
-h1 {
-    color: blueviolet;
-    font-size: 45px;
-    font-family: 'Courier New', Courier, monospace;
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
 }
