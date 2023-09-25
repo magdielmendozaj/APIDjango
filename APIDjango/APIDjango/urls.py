@@ -19,6 +19,7 @@ from api.views import Home, Registro, Inicio
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path('',Home.as_view()),
     path('index',Home.as_view()),
     path('registro',Registro.as_view()),
     path('inicio',Inicio.as_view()),
