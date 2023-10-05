@@ -13,29 +13,68 @@
                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
   
                   <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
-                <form action="/index">
+                  <!-- <i class="fas fa-user h1 fw-bold mb-5 mx-1 mx-md-4 mt-4"></i> -->
+                <form action="/registrarUsuario" method="post">{% csrf_token %}
+                  
                   <div class="mx-1 mx-md-4">
-  
+
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="form3Example1c" class="form-control" />
-                        <label class="form-label" for="form3Example1c">Tu nombre</label>
+                        <input type="text" id="form3Example1c" class="form-control" name="txtNombre" required />
+                        <label class="form-label" for="form3Example1c">Nombre(s)</label>
+                      </div>
+                    </div>
+
+                    <div class="row mb-4">
+                      <i class="fas  fa-lg me-3 fa-fw"></i>
+                      <div class="col">
+                          <div class="form-outline mb-0">
+                              <input type="text" id="form3Example1c" class="form-control" name="txtAPaterno" required />
+                              <label class="form-label" for="form3Example1c">Apellido Paterno</label>
+                          </div>
+                      </div>
+                      <div class="col">
+                          <div class="form-outline mb-0">
+                              <input type="text" id="form3Example2c" class="form-control" name="txtAMaterno" required />
+                              <label class="form-label" for="form3Example2c">Apellido Materno</label>
+                          </div>
+                      </div>
+                  </div>
+
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-birthday-cake fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <input type="date" id="form3Example3c" class="form-control" name="txtNacimiento" required />
+                        <label class="form-label" for="form3Example3c">Tu fecha de nacimiento</label>
                       </div>
                     </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-code fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline flex-fill mb-0">
+                        <select name="" id="form3Example3c" class="form-select" name="cbxEspecialidad" required >
+                          <option value="">Selecciona tu especialidad</option>
+                          {% for e in especialidades %}
+                          <option value="{{forloop.counter}}">{{e.nombre}}</option>
+                          {% endfor %}
+                        </select>
+                        <label class="form-label" for="form3Example3c">Tu especialidad</label>
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="email" id="form3Example3c" class="form-control" />
-                        <label class="form-label" for="form3Example3c">Tu correo electrónico</label>
+                        <input type="text" id="form3Example1c" class="form-control" name="txtEmail" required />
+                        <label class="form-label" for="form3Example1c">Tu correo electrónico</label>
                       </div>
                     </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="password" id="form3Example4c" class="form-control" />
+                        <input type="password" id="form3Example4c" class="form-control" name="txtContraseña" required />
                         <label class="form-label" for="form3Example4c">Contraseña</label>
                       </div>
                     </div>
@@ -66,7 +105,7 @@
             </div>
                 <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
   
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                  <img src="https://www.shakebugs.com/wp-content/uploads/2022/07/Shake-naslovne-slike-3-1-1.png"
                     class="img-fluid" alt="Sample image">
   
                 </div>
