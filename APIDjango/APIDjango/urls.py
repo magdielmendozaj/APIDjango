@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from api.views import Login, Signup, Index
+from api import views
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('',Login.as_view()),
-    path('login',Login.as_view()),
-    path('signup',Signup.as_view()),
-    path('index',Index.as_view()),
+    path('login',Login.as_view(), name='login'),
+    path('signup',Signup.as_view(), name='signup'),
+    path('index',Index.as_view(), name='index'),
+    path('registrarUsuario/',views.registrarUsuario),
+    path('signin/',views.signin),
 ]

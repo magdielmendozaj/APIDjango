@@ -5,20 +5,22 @@
 {% block body %}
 
 {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-dismissible alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong class="text-dark">{{ message }}</strong>
-        </div>
-        {% endfor %}
-        {% endif %}
+  <div class="alert alert-dismissible alert-success">
+    {% for message in messages %}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong class="text-dark">{{ message }}</strong>
+  </div>
+    {% endfor %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <header class="bg-dark py-5">
     <div class="container px-5">
         <div class="row gx-5 align-items-center justify-content-center">
             <div class="col-lg-8 col-xl-7 col-xxl-6">
                 <div class="my-5 text-center text-xl-start">
-                    <h1 class="display-5 fw-bolder text-white mb-2">Portafolio para Programadores</h1>
+                    <h1 Portafolio class="display-5 fw-bolder text-white mb-2">DevProfile Hub: Portafolio para Programadores</h1>
                     <p class="lead fw-normal text-white-50 mb-4"></p>
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                         <a class="btn btn-primary btn-lg px-4 me-sm-3" href="index">Comenzar</a>
@@ -39,23 +41,23 @@
                 <div class="row gx-5 row-cols-1 row-cols-md-2">
                     <div class="col mb-5 h-100">
                         <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                        <h2 class="h5">Oportunidades Laborales Destacadas</h2>
+                        <p class="mb-0">Destacamos el trabajo de programadores talentosos como tú. Encuentra nuevas y emocionantes oportunidades laborales que coincidan con tus habilidades y experiencia.</p>
                     </div>
                     <div class="col mb-5 h-100">
                         <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                        <h2 class="h5">Muestra Tus Habilidades</h2>
+                        <p class="mb-0">Muestra al mundo tus habilidades y logros en programación. Crea un perfil profesional que destaque tus proyectos y contribuciones.</p>
                     </div>
                     <div class="col mb-5 mb-md-0 h-100">
                         <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                        <h2 class="h5">Construye Tu Red Profesional</h2>
+                        <p class="mb-0">Conéctate con otros profesionales de la industria, recibe retroalimentación valiosa y amplía tu red de contactos. Juntos, podemos crecer y alcanzar el éxito.</p>
                     </div>
                     <div class="col h-100">
                         <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
-                        <h2 class="h5">Featured title</h2>
-                        <p class="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                        <h2 class="h5">Impulsa Tu Carrera</h2>
+                        <p class="mb-0">Nuestra plataforma está diseñada para impulsar tu carrera en el mundo de la programación. Únete a una comunidad de programadores apasionados y haz que tu trabajo se destaque.</p>
                     </div>
                 </div>
             </div>
@@ -82,6 +84,104 @@
         </div>
     </div>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico de Barras</h5>
+                    <canvas id="graficoBarras" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Circular</h5>
+                    <canvas id="graficoCircular" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico de Líneas</h5>
+                    <canvas id="graficoLineas" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Datos para el Gráfico de Barras
+    var ctxBarras = document.getElementById('graficoBarras').getContext('2d');
+    var labelsBarras = {{ labels_barras|safe }};
+    var valoresBarras = {{ valores_barras|safe }};
+    var graficoBarras = new Chart(ctxBarras, {
+        type: 'bar',
+        data: {
+            labels: labelsBarras,
+            datasets: [{
+                label: 'Usuarios por Especialidad',
+                data: valoresBarras,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Datos para el Gráfico Circular
+    var ctxCircular = document.getElementById('graficoCircular').getContext('2d');
+    var labelsCircular = {{ labels_circular|safe }};
+    var valoresCircular = {{ valores_circular|safe }};
+    var graficoCircular = new Chart(ctxCircular, {
+        type: 'pie',
+        data: {
+            labels: labelsCircular,
+            datasets: [{
+                data: valoresCircular,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ],
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Datos para el Gráfico de Líneas
+    var ctxLineas = document.getElementById('graficoLineas').getContext('2d');
+    var labelsLineas = {{ labels_lineas|safe }};
+    var valoresLineas = {{ valores_lineas|safe }};
+    var graficoLineas = new Chart(ctxLineas, {
+        type: 'line',
+        data: {
+            labels: labelsLineas,
+            datasets: [{
+                label: 'Usuarios por Especialidad (Línea)',
+                data: valoresLineas,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        }
+    });
+</script>
+    
 <!-- Blog preview section-->
 <section class="py-5">
     <div class="container px-5 my-5">
