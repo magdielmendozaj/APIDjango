@@ -88,6 +88,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'devprofilehub',
+#         'USER': 'magdiel123',
+#         'PASSWORD': 'lXj636xFwHPPIYJV9h3J3KppIRkF0FAK',
+#         'HOST': 'oregon-postgres.render.com',
+#         'PORT': '5432',
+#     }
+# }
+
 # AUTHENTICATIONS
 
 AUTHENTICATION_BACKENDS = [
