@@ -166,4 +166,5 @@ EMAIL_HOST_PASSWORD = 'wrmu nfmj lefx mxxj'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'api.backends.UsuarioBackend',
 ]

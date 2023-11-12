@@ -20,9 +20,9 @@ class Login(APIView):
     
     def post(self,request):
         email = request.POST['txtEmail']
-        password =request.POST['txtPassword']
+        contraseña = request.POST['txtPassword']
 
-        user = authenticate(request, email=email, password=password, backend='api.backends.UsuarioBackend')
+        user = authenticate(request, email=email, password=contraseña, backend='api.backends.UsuarioBackend')
 
         if user is not None:
             messages.success(request, '¡Bienvenido! Sesión iniciada.')
