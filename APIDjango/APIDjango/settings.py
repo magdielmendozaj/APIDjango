@@ -94,9 +94,9 @@ WSGI_APPLICATION = 'APIDjango.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'devprofilehub',
+        'NAME': 'devprofilehub_ngae',
         'USER': 'magdiel123',
-        'PASSWORD': 'lXj636xFwHPPIYJV9h3J3KppIRkF0FAK',
+        'PASSWORD': 'j4kwcz51oqZ2IpSFLrOkb0QjXBCxeX5r',
         'HOST': 'oregon-postgres.render.com',
         'PORT': '5432',
     }
@@ -161,3 +161,7 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'mjoelmagdiel1@gmail.com'
 EMAIL_HOST_PASSWORD = 'wrmu nfmj lefx mxxj'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
