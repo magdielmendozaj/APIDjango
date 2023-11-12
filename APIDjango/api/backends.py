@@ -9,8 +9,8 @@ class UsuarioBackend:
         except Usuario.DoesNotExist:
             return None
 
-    def get_user(self, user_id):
+    def get_user(self, idUser):
         try:
-            return Usuario.objects.get(pk=user_id)
+            return Usuario.objects.get(pk=idUser)
         except Usuario.DoesNotExist:
             return None
