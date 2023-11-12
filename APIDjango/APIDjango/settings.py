@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-s_pc2q0p+m$*7*w9$81dhqf1vkan^u7u9-c0pr_-&k6wf7xu-h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['devprofilehub.onrender.com', 'localhost']
+ALLOWED_HOSTS = ['devprofilehub.onrender.com', '127.0.0.1']
 
 
 # Application definition
@@ -102,14 +102,6 @@ DATABASES = {
     }
 }
 
-# AUTHENTICATIONS
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
-
-AUTH_USER_MODEL = 'api.Usuario'
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -132,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'America/Mexico_City'
 
@@ -155,8 +147,6 @@ if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
     # and creating unique names for each version so they can safely be cached forever.
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-LOGIN_URL = 'login'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -171,11 +161,3 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'mjoelmagdiel1@gmail.com'
 EMAIL_HOST_PASSWORD = 'wrmu nfmj lefx mxxj'
-
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-]

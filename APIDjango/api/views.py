@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from .models import Especialidad, Usuario
+from .models import Especialidad, Usuario, Sexo
 from django.contrib import messages
 from django.db.models import Count
 
@@ -18,11 +18,62 @@ class Login(APIView):
     def get(self,request):
         return render(request,self.template_name)
     
+    def post(self,request):
+        email = request.POST['txtEmail']
+        password =request.POST['txtPassword']
+
+        user = authenticate(request, email=email, password=password, backend='api.backends.UsuarioBackend')
+
+        if user is not None:
+            messages.success(request, '¡Bienvenido! Sesión iniciada.')
+            login(request, user)
+            return redirect('index')    
+        else:
+            messages.error(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
+            return self.get(request)
+            
+    
 class Signup(APIView):
     template_name='signup.html'
     def get(self,request):
         especialidadesListadas = Especialidad.objects.all()
-        return render(request,self.template_name, {"especialidades": especialidadesListadas})
+        sexosListados = Sexo.objects.all()
+        return render(request,self.template_name, {"especialidades": especialidadesListadas, "sexos": sexosListados})
+    
+    def post(self,request):
+        if request.POST["txtContraseña"] == request.POST["txtContraseña1"]:
+            try:
+                nombre = request.POST['txtNombre']
+                aPaterno = request.POST['txtAPaterno']
+                aMaterno = request.POST['txtAMaterno']
+                nacimiento = request.POST['txtNacimiento']
+                idEspecialidad = request.POST['cbxEspecialidad']
+                idSexo = request.POST['cbxSexo']
+                email = request.POST['txtEmail']
+                password = request.POST['txtContraseña']
+
+                especialidad = Especialidad.objects.get(pk=idEspecialidad)
+                sexo = Sexo.objects.get(pk=idSexo)
+
+                user = Usuario.objects.create(email=email, nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, password=password, especialidad=especialidad, sexo=sexo)
+
+                user.save()
+                login(request, user)
+                confirmation_mail = create_mail(
+                    email,
+                    'Correo de confirmación',
+                    'mails/confirmation.html',
+                    {
+                        'nombre': nombre
+                    }
+                )
+                confirmation_mail.send(fail_silently=False)
+                messages.success(request, '¡Registro exitoso! En breve te llegará un correo de confirmación')
+            except IntegrityError:
+                messages.error(request, 'El correo ya ha sido utilizado.')
+
+            return self.get(request)    
+        
     
 class Index(APIView):
     template_name='index.html'
@@ -78,7 +129,7 @@ def signin(request):
                
         else: 
             messages.success(request, '¡Bienvenido! Sesión iniciada.')
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            login(request, user)
             return redirect('index')
                
             # return redirect('index.html')
