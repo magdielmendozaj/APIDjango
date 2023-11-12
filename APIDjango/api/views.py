@@ -58,7 +58,6 @@ class Signup(APIView):
                 user = Usuario.objects.create(email=email, nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, password=password, especialidad=especialidad, sexo=sexo)
 
                 user.save()
-                login(request, user)
                 confirmation_mail = create_mail(
                     email,
                     'Correo de confirmación',
