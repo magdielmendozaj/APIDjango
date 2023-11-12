@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -16,7 +17,7 @@ class Sexo(models.Model):
     def __str__(self):
         return self.nombre
 
-class Usuario(models.Model):
+class Usuario(AbstractUser):
     idUser = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=50)
