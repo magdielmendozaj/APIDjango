@@ -1,6 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django.utils import timezone
 
 # Create your models here.
 
@@ -26,8 +24,8 @@ class Usuario(models.Model):
     aMaterno = models.CharField(max_length=50)
     nacimiento = models.DateField()
     password = models.CharField(max_length=20)
-    especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
-    sexo = models.ForeignKey(Sexo, on_delete=models.CASCADE)
+    especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE, null=True)
+    sexo = models.ForeignKey('Sexo', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.email
