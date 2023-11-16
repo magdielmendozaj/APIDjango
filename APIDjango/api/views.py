@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from .models import Especialidad, Usuario, Sexo
 from django.contrib import messages
 from django.db.models import Count
+from django.contrib.auth.hashers import make_password
 
 from django.conf import settings
 
@@ -25,11 +26,11 @@ class Login(APIView):
         user = authenticate(request, email=email, password=contraseña, backend='api.backends.UsuarioBackend')
 
         if user is not None:
+            login(request, user, backend='api.backends.UsuarioBackend')
             messages.success(request, '¡Bienvenido! Sesión iniciada.')
-            login(request, user)
             return redirect('index')    
         else:
-            messages.error(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
+            messages.warning(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
             return self.get(request)
             
     
@@ -55,9 +56,11 @@ class Signup(APIView):
                 especialidad = Especialidad.objects.get(pk=idEspecialidad)
                 sexo = Sexo.objects.get(pk=idSexo)
 
-                user = Usuario.objects.create(email=email, nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, password=password, especialidad=especialidad, sexo=sexo)
-
+                user = Usuario.objects.create(email=email, nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, password=make_password(password), especialidad=especialidad, sexo=sexo)
+                user.set_password(password)
                 user.save()
+                login(request, user, backend='api.backends.UsuarioBackend')
+
                 confirmation_mail = create_mail(
                     email,
                     'Correo de confirmación',
@@ -114,59 +117,6 @@ def create_mail(email, subject, template_path, context):
     )
     mail.attach_alternative(content, 'text/html')
     return mail
-
-def signin(request):
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    elif request.method == 'POST':
-        
-        user = authenticate(request, email=request.POST['txtEmail'], password=request.POST['txtPassword'])
-
-        if user is not None:
-           messages.error(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
-        #    return redirect(request, 'login.html')
-               
-        else: 
-            messages.success(request, '¡Bienvenido! Sesión iniciada.')
-            login(request, user)
-            return redirect('index')
-               
-            # return redirect('index.html')
-    # return render(request, 'login.html')
-
-def registrarUsuario(request):
-    if request.method == 'GET':
-        return render(request, 'signup.html', {"form": UserCreationForm})
-    elif request.POST["txtContraseña"] == request.POST["txtContraseña1"]:
-        try:
-            nombre = request.POST['txtNombre']
-            aPaterno = request.POST['txtAPaterno']
-            aMaterno = request.POST['txtAMaterno']
-            nacimiento = request.POST['txtNacimiento']
-            idEspecialidad = request.POST['cbxEspecialidad']
-            email = request.POST['txtEmail']
-            password = request.POST['txtContraseña']
-
-            especialidad = Especialidad.objects.get(pk=idEspecialidad)
-
-            user = Usuario.objects.create(nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, email=email, password=password, especialidad=especialidad)
-
-            user.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            confirmation_mail = create_mail(
-                email,
-                'Correo de confirmación',
-                'mails/confirmation.html',
-                {
-                    'nombre': nombre
-                }
-            )
-            confirmation_mail.send(fail_silently=False)
-            messages.success(request, '¡Registro exitoso! En breve te llegará un correo de confirmación')
-        except IntegrityError:
-            messages.success(request, 'El correo ya ha sido utilizado.')
-    
-    return render(request, 'signup.html')
 
 def grafica_usuarios_especialidad(request):
     especialidades = Especialidad.objects.annotate(total_usuarios=Count('usuario'))
