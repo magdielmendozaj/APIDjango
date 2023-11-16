@@ -42,7 +42,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     aPaterno = models.CharField(max_length=50)
     aMaterno = models.CharField(max_length=50)
     nacimiento = models.DateField()
-    password = models.CharField(max_length=20)
+    password = models.CharField(max_length=128)
     especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE, null=True)
     sexo = models.ForeignKey('Sexo', on_delete=models.CASCADE, null=True)
 
