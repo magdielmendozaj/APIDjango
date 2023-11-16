@@ -35,7 +35,7 @@ class UsuarioManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-class Usuario(models.Model):
+class Usuario(AbstractBaseUser, PermissionsMixin):
     idUser = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=50)
