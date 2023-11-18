@@ -12,28 +12,31 @@ from django.conf import settings
 
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth.models import AnonymousUser
 
 # Create your views here.
 class Login(APIView):
-    template_name='login.html'
-    def get(self,request):
-        return render(request,self.template_name)
-    
-    def post(self,request):
+    template_name = 'login.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
         email = request.POST['txtEmail']
         contraseña = request.POST['txtPassword']
 
         user = authenticate(request, email=email, password=contraseña, backend='api.backends.UsuarioBackend')
 
-        if user is not None:
-            login(request, user, backend='api.backends.UsuarioBackend')
-            messages.success(request, '¡Bienvenido! Sesión iniciada.')
-            return redirect('index')    
-        else:
+        if user is not None and not isinstance(user, AnonymousUser):
+            # User is authenticated, proceed with login
             messages.warning(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
             return self.get(request)
-            
-    
+        else:
+            # Handle case when user is not authenticated
+            login(request, user, backend='api.backends.UsuarioBackend')
+            messages.success(request, '¡Bienvenido! Sesión iniciada.')
+            return redirect('index')
+             
 class Signup(APIView):
     template_name='signup.html'
     def get(self,request):

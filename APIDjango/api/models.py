@@ -19,29 +19,27 @@ class Sexo(models.Model):
         return self.nombre
     
 class UsuarioManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('El campo de correo electrónico es obligatorio')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
     
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
 
         return self.create_user(email, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    idUser = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=50)
-    aPaterno = models.CharField(max_length=50)
-    aMaterno = models.CharField(max_length=50)
-    nacimiento = models.DateField()
+    apellido_paterno = models.CharField(max_length=50)
+    apellido_materno = models.CharField(max_length=50)
+    fecha_de_nacimiento = models.DateField()
     password = models.CharField(max_length=128)
     especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE, null=True)
     sexo = models.ForeignKey('Sexo', on_delete=models.CASCADE, null=True)
@@ -53,23 +51,24 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='alumno_groups',  
         blank=True,
-        verbose_name='groups',
+        related_name='alumno_user_groups',  
     )
     
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         related_name='alumno_user_permissions',
         blank=True,
-        verbose_name='user permissions',
     )
 
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'aPaterno', 'aMaterno']
+    REQUIRED_FIELDS = ['nombre', 'apellido_paterno', 'apellido_materno']
 
     def __str__(self):
         return self.email
+    
+    def get_full_name(self):
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
     

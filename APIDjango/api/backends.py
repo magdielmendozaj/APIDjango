@@ -1,22 +1,19 @@
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.backends import ModelBackend
 from .models import Usuario
 
 class UsuarioBackend:
-    def authenticate(email=None, password=None):
-        print(f'Trying to authenticate user with email: {email}')
+    def get_user(self, user_id):
         try:
-            alumno = Usuario.objects.get(email=email)
-            if check_password(password, alumno.password):
-                print('Authentication successful')
-                return alumno
-            else:
-                print('Authentication failed: Incorrect password')
+            return Usuario.objects.get(pk=user_id)
         except Usuario.DoesNotExist:
-            print('Authentication failed: User not found')
             return None
 
-    def get_user(self, matricula):
+    def authenticate(self, request, email=None, password=None, **kwargs):
         try:
-            return Usuario.objects.get(pk=matricula)
+            user = Usuario.objects.get(email=email)
         except Usuario.DoesNotExist:
             return None
+
+        if user.check_password(password):
+            return user
+        return None

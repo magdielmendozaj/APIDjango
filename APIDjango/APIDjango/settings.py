@@ -96,9 +96,9 @@ WSGI_APPLICATION = 'APIDjango.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'devprofilehub_ngae',
+        'NAME': 'devprofilehub_0pbs',
         'USER': 'magdiel123',
-        'PASSWORD': 'j4kwcz51oqZ2IpSFLrOkb0QjXBCxeX5r',
+        'PASSWORD': 'P6CH1BTgxEzA4xPH89umnJ8ZUwiSz3bq',
         'HOST': 'oregon-postgres.render.com',
         'PORT': '5432',
     }
