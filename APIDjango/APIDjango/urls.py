@@ -19,7 +19,7 @@ from api.views import login_view, register_view, index_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',index_view, name='index'),
+    path('',index_view),
     path('login/',login_view, name='login'),
     path('signup/',register_view, name='signup'),
     path('index',index_view, name='index'),
