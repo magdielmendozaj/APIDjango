@@ -1,9 +1,6 @@
 from django import forms
-from django.forms import Form, ModelForm, DateField, widgets
-from django.contrib.auth.forms import UserCreationForm
+from django.forms import widgets
 from .models import Usuario, Especialidad, Sexo
-from django.core.exceptions import ValidationError
-from datetime import date, timedelta
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Correo Electrónico', widget=forms.EmailInput(attrs={'class': 'form-control form-control-lg'}))
