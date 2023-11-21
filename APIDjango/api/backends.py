@@ -1,7 +1,7 @@
 from django.contrib.auth.backends import ModelBackend
 from .models import Usuario
 
-class UsuarioBackend:
+class UsuarioBackend(ModelBackend):
     def get_user(self, user_id):
         try:
             return Usuario.objects.get(pk=user_id)

@@ -35,6 +35,7 @@ class UsuarioManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
+    idUsuario = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=50)
     apellido_paterno = models.CharField(max_length=50)
@@ -64,7 +65,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nombre', 'apellido_paterno', 'apellido_materno']
+    REQUIRED_FIELDS = ['nombre', 'apellido_paterno', 'apellido_materno', 'fecha_de_nacimiento', 'especialidad', 'sexo']
 
     def __str__(self):
         return self.email

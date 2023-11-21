@@ -164,7 +164,13 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'mjoelmagdiel1@gmail.com'
 EMAIL_HOST_PASSWORD = 'wrmu nfmj lefx mxxj'
 
+AUTH_USER_MODEL = 'api.Usuario'
+
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
     'api.backends.UsuarioBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'index'

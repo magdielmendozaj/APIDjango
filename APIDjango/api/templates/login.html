@@ -21,18 +21,19 @@
             class="img-fluid" alt="Phone image">
         </div>
         <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-          <form action="" method="post">{% csrf_token %}
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
             <!-- Email input -->
             <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login</p>
             <div class="form-outline mb-4">
-              <input type="email" id="form1Example13" class="form-control form-control-lg" name="txtEmail" />
-              <label class="form-label" for="form1Example13">Correo electrónico</label>
+              {{ form.email }}
+              <label class="form-label">{{ form.email.label_tag }}</label>
             </div>
   
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <input type="password" id="form1Example23" class="form-control form-control-lg" name="txtPassword" />
-              <label class="form-label" for="form1Example23">Contraseña</label>
+              {{ form.password }}
+              <label class="form-label">{{ form.password.label_tag }}</label>
             </div>
   
             <div class="d-flex justify-content-around align-items-center mb-4">
@@ -62,8 +63,8 @@
               </div>
               <a href="#" class="btn btn-primary w-100">Restaurar Contraseña</a>
               <div class="d-flex justify-content-between mt-4">
-                  <a class="" href="login">Login</a>
-                  <a class="" href="signup">Sing Up</a>
+                  <a class="" href="{% url 'login' %}">Login</a>
+                  <a class="" href="{% url 'signup' %}">Sing Up</a>
               </div>
           </div>
       </div>
@@ -91,7 +92,7 @@
             </div>
           </form>
           <div class="text-center text-lg-start mt-4 pt-2">
-            <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="signup"
+            <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="{% url 'signup' %}"
                 class="link-danger">Regístrate</a></p>
           </div>
         </div>

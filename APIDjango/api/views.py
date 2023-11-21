@@ -1,102 +1,83 @@
 from django.shortcuts import render, redirect
-from rest_framework.views import APIView
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from .models import Especialidad, Usuario, Sexo
 from django.contrib import messages
 from django.db.models import Count
-from django.contrib.auth.hashers import make_password
 
 from django.conf import settings
 
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
-from django.contrib.auth.models import AnonymousUser
+from .forms import LoginForm, CustomUserCreationForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-class Login(APIView):
-    template_name = 'login.html'
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=email, password=password)
 
-    def get(self, request):
-        return render(request, self.template_name)
+            if user is not None:
+                login(request, user)
+                messages.success(request, '¡Bienvenido! Sesión iniciada.')
+                return redirect('index')
+            else:
+                messages.error(request, 'Error, usuario o contraseña incorrecto.')
+    else:
+        form = LoginForm()
 
-    def post(self, request):
-        email = request.POST['txtEmail']
-        contraseña = request.POST['txtPassword']
-
-        user = authenticate(request, email=email, password=contraseña, backend='api.backends.UsuarioBackend')
-
-        if user is not None and not isinstance(user, AnonymousUser):
-            # User is authenticated, proceed with login
-            messages.warning(request, 'Usuario o contraseña incorrecto. Por favor, inténtalo de nuevo.')
-            return self.get(request)
-        else:
-            # Handle case when user is not authenticated
-            login(request, user, backend='api.backends.UsuarioBackend')
-            messages.success(request, '¡Bienvenido! Sesión iniciada.')
-            return redirect('index')
+    return render(request, 'login.html', {'form': form})
              
-class Signup(APIView):
-    template_name='signup.html'
-    def get(self,request):
-        especialidadesListadas = Especialidad.objects.all()
-        sexosListados = Sexo.objects.all()
-        return render(request,self.template_name, {"especialidades": especialidadesListadas, "sexos": sexosListados})
-    
-    def post(self,request):
-        if request.POST["txtContraseña"] == request.POST["txtContraseña1"]:
-            try:
-                nombre = request.POST['txtNombre']
-                aPaterno = request.POST['txtAPaterno']
-                aMaterno = request.POST['txtAMaterno']
-                nacimiento = request.POST['txtNacimiento']
-                idEspecialidad = request.POST['cbxEspecialidad']
-                idSexo = request.POST['cbxSexo']
-                email = request.POST['txtEmail']
-                password = request.POST['txtContraseña']
-
-                especialidad = Especialidad.objects.get(pk=idEspecialidad)
-                sexo = Sexo.objects.get(pk=idSexo)
-
-                user = Usuario.objects.create(email=email, nombre=nombre, aPaterno=aPaterno, aMaterno=aMaterno, nacimiento=nacimiento, password=make_password(password), especialidad=especialidad, sexo=sexo)
-                user.set_password(password)
-                user.save()
-                login(request, user, backend='api.backends.UsuarioBackend')
-
-                confirmation_mail = create_mail(
+def register_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
+            email = form.cleaned_data['email']
+            confirmation_mail = create_mail(
                     email,
                     'Correo de confirmación',
                     'mails/confirmation.html',
                     {
-                        'nombre': nombre
+                        'nombre': nombre,
                     }
                 )
+            try:
                 confirmation_mail.send(fail_silently=False)
-                messages.success(request, '¡Registro exitoso! En breve te llegará un correo de confirmación')
-            except IntegrityError:
-                messages.error(request, 'El correo ya ha sido utilizado.')
+            except Exception as e:
+                print(f"Error al enviar correo de confirmación: {e}")
+                messages.warning(request, 'Hubo un problema al enviar el correo de confirmación.')
+            form.save()
+            messages.success(request, '¡Registro exitoso! En breve te llegará un correo de confirmación.')
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
 
-            return self.get(request)    
-        
-    
-class Index(APIView):
-    template_name='index.html'
-    def get(self,request):
-        especialidades = Especialidad.objects.annotate(total_usuarios=Count('usuario'))
+    return render(request, 'signup.html', {'form': form})   
 
-        # Obtén datos para el gráfico de barras
-        labels_barras = [especialidad.nombre for especialidad in especialidades]
-        valores_barras = [especialidad.total_usuarios for especialidad in especialidades]
+def logout_view(request):
+    logout(request)
+    return redirect('index')
 
-        # Obtén datos para el gráfico circular
-        labels_circular = labels_barras
-        valores_circular = valores_barras
+@login_required
+def index_view(request):
+    especialidades = Especialidad.objects.annotate(total_usuarios=Count('usuario'))
 
-        # Obtén datos para el gráfico de líneas (puedes utilizar fechas si tienes registros de fechas)
-        labels_lineas = [str(especialidad) for especialidad in especialidades]
-        valores_lineas = valores_barras
-        return render(request,self.template_name, {
+    # Obtén datos para el gráfico de barras
+    labels_barras = [especialidad.nombre for especialidad in especialidades]
+    valores_barras = [especialidad.total_usuarios for especialidad in especialidades]
+
+    # Obtén datos para el gráfico circular
+    labels_circular = labels_barras
+    valores_circular = valores_barras
+
+    # Obtén datos para el gráfico de líneas (puedes utilizar fechas si tienes registros de fechas)
+    labels_lineas = [str(especialidad) for especialidad in especialidades]
+    valores_lineas = valores_barras
+    return render(request,'index.html', {
         'labels_barras': labels_barras,
         'valores_barras': valores_barras,
         'labels_circular': labels_circular,
