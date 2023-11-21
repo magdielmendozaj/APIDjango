@@ -53,6 +53,10 @@ def register_view(request):
             form.save()
             messages.success(request, '¡Registro exitoso! En breve te llegará un correo de confirmación.')
             return redirect('login')
+        else: 
+            print(f"Errores en el formulario: {form.errors}")
+            # Puedes agregar el contenido de form.errors a messages si lo prefieres
+            messages.error(request, 'Hubo un problema al procesar el formulario. Por favor, revisa los errores.')
     else:
         form = CustomUserCreationForm()
 

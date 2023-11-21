@@ -17,7 +17,7 @@ class CustomUserCreationForm(forms.ModelForm):
     nombre = forms.CharField(label='Nombre(s)', widget=forms.TextInput(attrs={'class': 'form-control'}))
     apellido_paterno = forms.CharField(label='Apellido Paterno', widget=forms.TextInput(attrs={'class': 'form-control'}))
     apellido_materno = forms.CharField(label='Apellido Materno', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    fecha_de_nacimiento = forms.DateField(label='Fecha de nacimiento', widget=widgets.DateInput(attrs={'class': 'form-control','type': 'date'}),validators=[lambda value: validate_fecha_de_nacimiento(value)])
+    fecha_de_nacimiento = forms.DateField(label='Fecha de nacimiento', widget=widgets.DateInput(attrs={'class': 'form-control','type': 'date'}))
         
     especialidad = forms.ModelChoiceField(label='Selecciona tu especialidad', queryset=Especialidad.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
     sexo = forms.ModelChoiceField(label='Selecciona tu sexo', queryset=Sexo.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
@@ -40,10 +40,3 @@ class CustomUserCreationForm(forms.ModelForm):
             user.save()
         return user
     
-def validate_fecha_de_nacimiento(value):
-    today = date.today()
-    edad_minima = today - timedelta(days=365 * 80) 
-    edad_maxima = today - timedelta(days=365 * 12) 
-
-    if not (edad_maxima <= value <= edad_minima):
-        raise ValidationError('La fecha de nacimiento debe estar entre 12 y 80 años de edad.')
