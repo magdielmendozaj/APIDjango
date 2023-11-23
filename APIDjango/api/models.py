@@ -45,6 +45,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE, null=True)
     sexo = models.ForeignKey('Sexo', on_delete=models.CASCADE, null=True)
 
+    github_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    github_access_token = models.CharField(max_length=255, blank=True, null=True)
+
     register_date = models.DateTimeField(default=timezone.now)
 
     is_active = models.BooleanField(default=False)
@@ -72,4 +75,3 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
     def get_full_name(self):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
-    

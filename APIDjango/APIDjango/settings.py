@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +57,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'allauth.account.middleware.AuthenticationMiddleware',
+    'allauth.socialaccount.middleware.SocialAccountMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'APIDjango.urls'
@@ -70,6 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'allauth.account.context_processors.account',
+                'allauth.socialaccount.context_processors.socialaccount',
             ],
         },
     },
@@ -168,8 +175,21 @@ AUTH_USER_MODEL = 'api.Usuario'
 AUTHENTICATION_BACKENDS = [
     'api.backends.UsuarioBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'index'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': 'f1848c7d809a1371fd56',
+            'secret': '4633a3cf1c352d4906cd7019d05c1cf69c71cc48',
+            'key': '',
+            'scope': ['read:user', 'user:email'],
+            'redirect_uri': 'https://devprofilehub.onrender.com/accounts/github/login/callback/',
+        }
+    }
+}
