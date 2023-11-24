@@ -27,7 +27,7 @@
               </li>
               {% if user.is_authenticated %}
                   <li class="nav-item">
-                      <a class="nav-link" href="{% provider_login_url 'github' method='oauth2' %}">Vincular GitHub</a><i class="fab fa-github me-2"></i>
+                      <a class="nav-link" href="{% url 'github_login_callback' %}">Vincular GitHub</a><i class="fab fa-github me-2"></i>
                   </li>
                   <li class="nav-item">
                       <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
