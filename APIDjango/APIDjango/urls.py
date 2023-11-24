@@ -16,10 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from api.views import login_view, register_view, index_view, logout_view, GitHubCallback, GitHubLogin
-# from allauth.socialaccount.views import OAuth2View
-# from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
-# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-# from allauth.socialaccount import views as allauth_socialaccount_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,9 +24,6 @@ urlpatterns = [
     path('signup/',register_view, name='signup'),
     path('index',index_view, name='index'),
     path('logout/',logout_view, name='logout'),
-    # re_path('accounts/github/login/callback/', OAuth2View.as_view(adapter_class=GitHubOAuth2Adapter, client_class=OAuth2Client), name='socialaccount_callback'),
-    # path('accounts/', include('allauth.socialaccount.urls')),
-    # path('accounts/github/login/callback/', allauth_socialaccount_views.github_login_callback, name='socialaccount_callback'),
     path('github/login/', GitHubLogin.as_view(), name='github-login'),
     path('github/callback/', GitHubCallback.as_view(), name='github-callback'),
 ]

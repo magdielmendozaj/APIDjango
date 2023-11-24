@@ -60,8 +60,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    # 'allauth.account.middleware.AuthenticationMiddleware',
-    # 'allauth.socialaccount.middleware.SocialAccountMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
 
@@ -78,8 +76,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'allauth.account.context_processors.account',
-                # 'allauth.socialaccount.context_processors.socialaccount',
             ],
         },
     },
@@ -198,20 +194,6 @@ SITE_ID = 1  # El ID del sitio asociado a tu aplicación en allauth
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'github': {
-#         'APP': {
-#             'client_id': 'f1848c7d809a1371fd56',
-#             'secret': '4633a3cf1c352d4906cd7019d05c1cf69c71cc48',
-#             'key': '',
-#             'scope': ['read:user', 'user:email'],
-#             'redirect_uri': 'https://devprofilehub.onrender.com/accounts/github/login/callback/',
-#         }
-#     }
-# }
-
 GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID')
 GITHUB_CLIENT_SECRET = config('GITHUB_CLIENT_SECRET')
 GITHUB_REDIRECT_URI = config('GITHUB_REDIRECT_URI')
-
-# SOCIALACCOUNT_AUTO_SIGNUP = False

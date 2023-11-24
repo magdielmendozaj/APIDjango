@@ -11,14 +11,11 @@ from django.core.mail import EmailMultiAlternatives
 from .forms import LoginForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 
-from allauth.socialaccount.models import SocialAccount
-
 import os
 import requests
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
-from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from decouple import config
@@ -127,54 +124,6 @@ def grafica_usuarios_especialidad(request):
 
     return render(request, 'tu_app/grafica_usuarios_especialidad.html', {'labels': labels, 'valores': valores})
 
-# def github_login_callback(request):
-#     # Manejar la lógica de redirección después de iniciar sesión con GitHub
-#     # ...
-
-#     # Obtener la cuenta social de GitHub asociada con el usuario
-#     github_social_account = SocialAccount.objects.filter(provider='github', user=request.user).first()
-
-#     if github_social_account:
-#         # El usuario ya tiene una cuenta de GitHub vinculada, puedes redirigirlo a donde desees
-#         return redirect('index')
-#     else:
-#         # El usuario no tiene una cuenta de GitHub vinculada, puedes manejar la lógica de vinculación aquí
-#         # ...
-
-#         # Obtener los datos relevantes de la cuenta de GitHub
-#         github_username = github_social_account.extra_data.get('login')
-#         github_access_token = github_social_account.socialtoken_set.first().token
-
-#         # Crear o actualizar el usuario con los datos de GitHub
-#         usuario, created = Usuario.objects.get_or_create(email=request.user.email)
-
-#         # Actualizar los campos específicos de GitHub
-#         usuario.github_username = github_username
-#         usuario.github_access_token = github_access_token
-
-#         # Puedes agregar otros campos de usuario que desees actualizar
-#         # usuario.otro_campo = valor
-
-#         usuario.save()
-
-#         # Redirigir a donde desees después de la vinculación
-#         return redirect('index')
-    
-# def my_custom_view(request):
-#     # Redirigir al usuario a la página de inicio de sesión social de GitHub
-#     return redirect('socialaccount_login', 'github')
-
-# def handle_github_callback(request):
-#     # Manejar la lógica después del inicio de sesión con GitHub
-#     github_social_account = SocialAccount.objects.filter(provider='github', user=request.user).first()
-
-#     if github_social_account:
-#         # El usuario ya tiene una cuenta de GitHub vinculada, puedes redirigirlo a donde desees
-#         return redirect('tu_página_principal')
-#     else:
-#         # El usuario no tiene una cuenta de GitHub vinculada, puedes manejar la lógica de vinculación aquí
-#         return redirect('página_de_vinculación_de_cuentas_github')
-
 User = get_user_model()
 
 class GitHubLogin(View):
@@ -186,9 +135,9 @@ class GitHubCallback(View):
     def get(self, request):
         code = request.GET.get('code')
         if not code:
-            return HttpResponse("Error: No se proporcionó el código de autorización.")
+            messages.warning(request, "No se proporcionó el código de autorización.")
+            return redirect('index')
 
-        # Obtener el token de acceso usando el código de autorización
         response = requests.post(
             'https://github.com/login/oauth/access_token',
             params={
@@ -200,17 +149,14 @@ class GitHubCallback(View):
         )
         data = response.json()
 
-        # Obtener detalles del usuario
         user_response = requests.get(
             'https://api.github.com/user',
             headers={'Authorization': f"Bearer {data['access_token']}"}
         )
         user_data = user_response.json()
 
-        # Crear o actualizar el usuario en la base de datos
         user, created = User.objects.get_or_create(github_username=user_data['login'])
         user.github_access_token = data['access_token']
         user.save()
 
-        # Redirigir a la página principal u otra página después de la autenticación
         return redirect(reverse('index'))
