@@ -30,5 +30,5 @@ urlpatterns = [
     path('logout/',logout_view, name='logout'),
     # re_path('accounts/github/login/callback/', OAuth2View.as_view(adapter_class=GitHubOAuth2Adapter, client_class=OAuth2Client), name='socialaccount_callback'),
     path('accounts/', include('allauth.socialaccount.urls')),
-    path('accounts/github/login/callback/', allauth_socialaccount_views.github_login_callback, name='github_login_callback'),
+    path('accounts/github/login/callback/', allauth_socialaccount_views.ConnectionsView, name='github_login_callback'),
 ]
