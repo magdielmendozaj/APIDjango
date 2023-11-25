@@ -155,8 +155,15 @@ class GitHubCallback(View):
         )
         user_data = user_response.json()
 
-        user, created = User.objects.get_or_create(github_username=user_data['login'])
-        user.github_access_token = data['access_token']
-        user.save()
+        if request.user.is_authenticated:
+            request.user.github_username = user_data['login']
+            request.user.github_access_token = data['access_token']
+            request.user.save()
+
+            login(request, request.user)
+
+            messages.success(request, "Información de GitHub actualizada correctamente.")
+        else:
+            messages.warning(request, "Usuario no autenticado.")
 
         return redirect(reverse('index'))

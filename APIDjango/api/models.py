@@ -6,14 +6,14 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 class Especialidad(models.Model):
     idEspecialidad = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.nombre
     
 class Sexo(models.Model):
     idSexo = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=10)
+    nombre = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.nombre

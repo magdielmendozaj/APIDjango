@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['devprofilehub.onrender.com', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'api',
     'django.contrib.admin',
     'django.contrib.auth',
