@@ -155,6 +155,13 @@ class GitHubCallback(View):
         )
         user_data = user_response.json()
 
+        try:
+            existing_user = User.objects.get(github_username=user_data['login'])
+            messages.error(request, "El usuario de GitHub ya ha sido utilizado.")
+            return redirect('index')
+        except User.DoesNotExist:
+            pass 
+
         if request.user.is_authenticated:
             request.user.github_username = user_data['login']
             request.user.github_access_token = data['access_token']
