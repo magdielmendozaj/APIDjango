@@ -75,3 +75,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
     def get_full_name(self):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
+
+class Profile(models.Model):
+    usuario = models.OneToOneField('Usuario', on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='profiles', null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    link = models.URLField(max_length=200, null=True, blank=True)

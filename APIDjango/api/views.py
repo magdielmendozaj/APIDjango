@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import Especialidad, Usuario, Sexo
+from .models import Especialidad, Usuario, Sexo, Profile
 from django.contrib import messages
 from django.db.models import Count
 
@@ -8,17 +8,21 @@ from django.conf import settings
 
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
-from .forms import LoginForm, CustomUserCreationForm
+from .forms import LoginForm, CustomUserCreationForm, ProfileForm
 from django.contrib.auth.decorators import login_required
 
 import os
 import requests
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from decouple import config
+
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView
+from django.utils.decorators import method_decorator
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -174,3 +178,15 @@ class GitHubCallback(View):
             messages.warning(request, "Usuario no autenticado.")
 
         return redirect(reverse('index'))
+
+@method_decorator(login_required, name='dispatch')
+class ProfileUpdate(UpdateView):
+    form_class = ProfileForm
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        try:
+            return Profile.objects.get(usuario=self.request.user)
+        except Profile.DoesNotExist:
+            return Profile.objects.create(usuario=self.request.user)
+    template_name = "profile_form.html"

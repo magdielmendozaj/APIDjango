@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from api.views import login_view, register_view, index_view, logout_view, GitHubCallback, GitHubLogin
+from api.views import login_view, register_view, index_view, logout_view, GitHubCallback, GitHubLogin, ProfileUpdate
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,9 @@ urlpatterns = [
     path('logout/',logout_view, name='logout'),
     path('github/login/', GitHubLogin.as_view(), name='github-login'),
     path('github/callback/', GitHubCallback.as_view(), name='github-callback'),
+    path('profile/', ProfileUpdate.as_view(), name='profile'),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
