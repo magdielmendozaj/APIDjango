@@ -42,7 +42,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['avatar', 'bio', 'link']
         widgets = {
-            'avatar': forms.ClearableFileInput(attrs={'class':'form-control-file mt-3'}),
+            'avatar': forms.ClearableFileInput(attrs={'class':'form-control-file mt-3 custom-file-input'}),
             'bio': forms.Textarea(attrs={'class':'form-control mt-3', 'rows':3, 'placeholder':'Biografía'}),
             'link': forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Enlace'}),
         }
