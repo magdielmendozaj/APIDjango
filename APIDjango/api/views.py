@@ -171,8 +171,6 @@ class GitHubCallback(View):
             request.user.github_access_token = data['access_token']
             request.user.save()
 
-            # login(request, request.user, backend='django.contrib.auth.backends.ModelBackend')
-
             messages.success(request, "Información de GitHub actualizada correctamente.")
         else:
             messages.warning(request, "Usuario no autenticado.")
