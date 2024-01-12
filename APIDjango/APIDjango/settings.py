@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['devprofilehub.onrender.com', '127.0.0.1']
 
 INSTALLED_APPS = [
     'rest_framework',
+    'storages',
     'api',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -154,6 +155,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_URL = 'https://console.cloud.google.com/storage/browser/devprofile-hub/'
+
+# GS_STATIC_BUCKET_NAME = 'devprofile-hub'
+# STATIC_URL = f'https://storage.googleapis.com/{GS_STATIC_BUCKET_NAME}/static/'
+
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
     # in your application directory on Render.
@@ -164,6 +170,8 @@ if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+# STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage' if STATIC_URL == GCS_STATIC_URL else 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -198,6 +206,10 @@ LOGOUT_REDIRECT_URL = '/'
 GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID')
 GITHUB_CLIENT_SECRET = config('GITHUB_CLIENT_SECRET')
 GITHUB_REDIRECT_URI = config('GITHUB_REDIRECT_URI')
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1091085058694580'
+SOCIAL_AUTH_FACEBOOK_SECRET = '8d5709b2b31fade65aa8d79c22114c88'
+SOCIAL_AUTH_FACEBOOK_REDIRECT_URI = 'https://devprofilehub.onrender.com/facebook/callback/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

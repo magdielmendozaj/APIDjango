@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -11,12 +13,18 @@ class Especialidad(models.Model):
     def __str__(self):
         return self.nombre
     
+    class Meta:
+        verbose_name_plural=u'Especialidades¿'
+    
 class Sexo(models.Model):
     idSexo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.nombre
+
+    class Meta:
+        verbose_name_plural=u'Sexos'
     
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -48,6 +56,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     github_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
     github_access_token = models.CharField(max_length=255, blank=True, null=True)
 
+    facebook_user_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    facebook_access_token = models.CharField(max_length=255, blank=True, null=True)
+
     register_date = models.DateTimeField(default=timezone.now)
 
     is_active = models.BooleanField(default=False)
@@ -76,8 +87,26 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
 
+    class Meta:
+        verbose_name_plural=u'Usuarios'
+
 class Profile(models.Model):
     usuario = models.OneToOneField('Usuario', on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='profiles', null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     link = models.URLField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.usuario.email
+
+    class Meta:
+        verbose_name_plural=u'Perfiles'
+
+@receiver(post_save, sender=Usuario)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(usuario=instance)
+
+@receiver(post_save, sender=Usuario)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

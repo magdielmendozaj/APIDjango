@@ -80,6 +80,14 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+def profile_view(request):
+    return render(request,'profile.html')
+
+def communnity_view(request):
+    usuarios = Usuario.objects.all()
+    especialidades = Especialidad.objects.all()
+    return render(request, 'communnity.html', {'usuarios': usuarios, 'especialidades': especialidades})
+
 @login_required
 def index_view(request):
     especialidades = Especialidad.objects.annotate(total_usuarios=Count('usuario'))
@@ -172,6 +180,54 @@ class GitHubCallback(View):
             request.user.save()
 
             messages.success(request, "Información de GitHub actualizada correctamente.")
+        else:
+            messages.warning(request, "Usuario no autenticado.")
+
+        return redirect(reverse('index'))
+
+class FacebookLogin(View):
+    def get(self, request):
+        facebook_authorize_url = f'https://www.facebook.com/v11.0/dialog/oauth?client_id={settings.SOCIAL_AUTH_FACEBOOK_KEY}&redirect_uri={settings.SOCIAL_AUTH_FACEBOOK_REDIRECT_URI}&scope=email'
+        return redirect(facebook_authorize_url)
+
+class FacebookCallback(View):
+    def get(self, request):
+        code = request.GET.get('code')
+        if not code:
+            messages.warning(request, "No se proporcionó el código de autorización.")
+            return redirect('index')
+
+        token_url = 'https://graph.facebook.com/v11.0/oauth/access_token'
+        params = {
+            'client_id': settings.SOCIAL_AUTH_FACEBOOK_KEY,
+            'client_secret': settings.SOCIAL_AUTH_FACEBOOK_SECRET,
+            'code': code,
+            'redirect_uri': settings.SOCIAL_AUTH_FACEBOOK_REDIRECT_URI,
+        }
+        token_response = requests.get(token_url, params=params)
+        token_data = token_response.json()
+
+        user_url = 'https://graph.facebook.com/v11.0/me'
+        user_params = {
+            'access_token': token_data['access_token'],
+            'fields': 'id,email',
+        }
+        user_response = requests.get(user_url, params=user_params)
+        user_data = user_response.json()
+
+        try:
+            existing_user = User.objects.get(email=user_data['email'])
+            messages.error(request, "El usuario de Facebook ya ha sido utilizado.")
+            return redirect('index')
+        except User.DoesNotExist:
+            pass 
+
+        if request.user.is_authenticated:
+            request.user.facebook_user_id = user_data['id']
+            request.user.facebook_access_token = token_data['access_token']
+            request.user.save()
+
+            messages.success(request, "Información de Facebook actualizada correctamente.")
         else:
             messages.warning(request, "Usuario no autenticado.")
 
