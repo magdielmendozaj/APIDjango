@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .models import Especialidad, Usuario, Sexo, Profile
 from django.contrib import messages
@@ -80,8 +80,10 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
-def profile_view(request):
-    return render(request,'profile.html')
+def profile_view(request, usuario_email):
+    usuario = get_object_or_404(Usuario, email=usuario_email)
+    especialidades = Especialidad.objects.all()
+    return render(request,'profile.html', {'usuario': usuario, 'especialidades': especialidades})
 
 def communnity_view(request):
     usuarios = Usuario.objects.all()
@@ -92,15 +94,12 @@ def communnity_view(request):
 def index_view(request):
     especialidades = Especialidad.objects.annotate(total_usuarios=Count('usuario'))
 
-    # Obtén datos para el gráfico de barras
     labels_barras = [especialidad.nombre for especialidad in especialidades]
     valores_barras = [especialidad.total_usuarios for especialidad in especialidades]
 
-    # Obtén datos para el gráfico circular
     labels_circular = labels_barras
     valores_circular = valores_barras
 
-    # Obtén datos para el gráfico de líneas (puedes utilizar fechas si tienes registros de fechas)
     labels_lineas = [str(especialidad) for especialidad in especialidades]
     valores_lineas = valores_barras
     return render(request,'index.html', {
@@ -180,54 +179,6 @@ class GitHubCallback(View):
             request.user.save()
 
             messages.success(request, "Información de GitHub actualizada correctamente.")
-        else:
-            messages.warning(request, "Usuario no autenticado.")
-
-        return redirect(reverse('index'))
-
-class FacebookLogin(View):
-    def get(self, request):
-        facebook_authorize_url = f'https://www.facebook.com/v11.0/dialog/oauth?client_id={settings.SOCIAL_AUTH_FACEBOOK_KEY}&redirect_uri={settings.SOCIAL_AUTH_FACEBOOK_REDIRECT_URI}&scope=email'
-        return redirect(facebook_authorize_url)
-
-class FacebookCallback(View):
-    def get(self, request):
-        code = request.GET.get('code')
-        if not code:
-            messages.warning(request, "No se proporcionó el código de autorización.")
-            return redirect('index')
-
-        token_url = 'https://graph.facebook.com/v11.0/oauth/access_token'
-        params = {
-            'client_id': settings.SOCIAL_AUTH_FACEBOOK_KEY,
-            'client_secret': settings.SOCIAL_AUTH_FACEBOOK_SECRET,
-            'code': code,
-            'redirect_uri': settings.SOCIAL_AUTH_FACEBOOK_REDIRECT_URI,
-        }
-        token_response = requests.get(token_url, params=params)
-        token_data = token_response.json()
-
-        user_url = 'https://graph.facebook.com/v11.0/me'
-        user_params = {
-            'access_token': token_data['access_token'],
-            'fields': 'id,email',
-        }
-        user_response = requests.get(user_url, params=user_params)
-        user_data = user_response.json()
-
-        try:
-            existing_user = User.objects.get(email=user_data['email'])
-            messages.error(request, "El usuario de Facebook ya ha sido utilizado.")
-            return redirect('index')
-        except User.DoesNotExist:
-            pass 
-
-        if request.user.is_authenticated:
-            request.user.facebook_user_id = user_data['id']
-            request.user.facebook_access_token = token_data['access_token']
-            request.user.save()
-
-            messages.success(request, "Información de Facebook actualizada correctamente.")
         else:
             messages.warning(request, "Usuario no autenticado.")
 

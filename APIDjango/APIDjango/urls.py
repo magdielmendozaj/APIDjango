@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from api.views import login_view, register_view, index_view, profile_view, communnity_view, logout_view, GitHubCallback, GitHubLogin, ProfileUpdate, FacebookCallback, FacebookLogin
+from api.views import login_view, register_view, index_view, profile_view, communnity_view, logout_view, GitHubCallback, GitHubLogin, ProfileUpdate
 from django.conf import settings
 
 urlpatterns = [
@@ -24,13 +24,11 @@ urlpatterns = [
     path('login/',login_view, name='login'),
     path('signup/',register_view, name='signup'),
     path('index',index_view, name='index'),
-    path('profiles',profile_view, name='profiles'),
+    path('perfil/<str:usuario_email>/',profile_view, name='profile_view'),
     path('communnity',communnity_view, name='communnity'),
     path('logout/',logout_view, name='logout'),
     path('github/login/', GitHubLogin.as_view(), name='github-login'),
     path('github/callback/', GitHubCallback.as_view(), name='github-callback'),
-    path('facebook/login/', FacebookLogin.as_view(), name='facebook-login'),
-    path('facebook/callback/', FacebookCallback.as_view(), name='facebook-callback'),
     path('profile/', ProfileUpdate.as_view(), name='profile'),
 ]
 

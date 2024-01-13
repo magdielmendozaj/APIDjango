@@ -14,7 +14,7 @@ class Especialidad(models.Model):
         return self.nombre
     
     class Meta:
-        verbose_name_plural=u'Especialidades¿'
+        verbose_name_plural=u'Especialidades'
     
 class Sexo(models.Model):
     idSexo = models.AutoField(primary_key=True)
@@ -56,9 +56,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     github_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
     github_access_token = models.CharField(max_length=255, blank=True, null=True)
 
-    facebook_user_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    facebook_access_token = models.CharField(max_length=255, blank=True, null=True)
-
     register_date = models.DateTimeField(default=timezone.now)
 
     is_active = models.BooleanField(default=False)
@@ -95,6 +92,9 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to='profiles', null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     link = models.URLField(max_length=200, null=True, blank=True)
+    facebook_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    instagram_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    twitter_username = models.CharField(max_length=255, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.usuario.email
