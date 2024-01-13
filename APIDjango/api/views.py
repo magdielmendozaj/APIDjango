@@ -24,10 +24,14 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView
 from django.utils.decorators import method_decorator
 
+import random
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Create your views here.
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -47,6 +51,8 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -83,7 +89,19 @@ def logout_view(request):
 def profile_view(request, usuario_email):
     usuario = get_object_or_404(Usuario, email=usuario_email)
     especialidades = Especialidad.objects.all()
-    return render(request,'profile.html', {'usuario': usuario, 'especialidades': especialidades})
+    github_username = usuario.github_username
+    random_percentage = random.randint(0, 100)
+
+    if github_username:
+        try:
+            response = requests.get(f'https://api.github.com/users/{github_username}/repos')
+            response.raise_for_status() 
+            repositories = response.json()
+        except requests.RequestException as e:
+            repositories = None
+    else:
+        repositories = None
+    return render(request,'profile.html', {'usuario': usuario, 'especialidades': especialidades, 'repositories': repositories, 'random_percentage': random_percentage})
 
 def communnity_view(request):
     usuarios = Usuario.objects.all()
