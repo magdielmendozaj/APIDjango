@@ -45,7 +45,7 @@ class ProfileForm(forms.ModelForm):
             'avatar': forms.ClearableFileInput(attrs={'class':'form-control-file mt-3'}),
             'bio': forms.Textarea(attrs={'class':'form-control mt-3', 'rows':3, 'placeholder':'Biografía'}),
             'link': forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Enlace'}),
-            'facebook_username': forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Facebook'}),
-            'instagram_username': forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Instagram'}),
-            'twitter_username': forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Twitter'}),
+            'facebook_username': forms.TextInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Facebook'}),
+            'instagram_username': forms.TextInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Instagram'}),
+            'twitter_username': forms.TextInput(attrs={'class':'form-control mt-3','placeholder':'Usuario de Twitter'}),
         }
